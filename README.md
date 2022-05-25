@@ -1,4 +1,6 @@
 ## Java AWS RDS Deploy Wizard
+✨ _Deploy AWS RDS instances & asynchronously follow-up_ ✨
+_________________
 
 **Deploy an RDS database with specific details:**
 ```java
