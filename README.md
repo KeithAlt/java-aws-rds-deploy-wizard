@@ -49,7 +49,7 @@ _________________
 ## Setup
 
 > ### Option 1. (Recommended)
-  - Login to the AWS CLI on the desired machine & use the ``.useDefaultClient()`` builder for client authentication
+  - Login to the AWS CLI on the desired machine _(this is typically automatic on an EC2)_ & use the ``.useDefaultClient()`` builder for client authentication
   - Either configure the ``rds-config.yml`` file or specify manually the required builder fields _(as shown above)_ to build your desired AWS RDS instance
 
 > ### Option 2.
