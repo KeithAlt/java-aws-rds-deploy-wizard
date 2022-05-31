@@ -48,15 +48,15 @@ _________________
 
 ## Setup
 
-# Option 1. (Recommended)
+> ### Option 1. (Recommended)
   - Login to the AWS CLI on the desired machine & use the ``.useDefaultClient()`` builder for client authentication
   - Either configure the ``rds-config.yml`` file or specify manually the required builder fields _(as shown above)_ to build your desired AWS RDS instance
 
-# Option 2.
+> ### Option 2.
   - Authenticate your AWS Client manually with the required builder fields as seen in ``.setClient()``
   - Either configure the ``rds-config.yml`` file or specify manually the required builder fields _(as shown above)_ to build your desired AWS RDS instance
 
-# Option 3. (Not recommended)
+> ### Option 3.
 Configure the ``rds-config.yml`` file with all the desired AWS client credentials & RDS instance build information
 ```yaml
 AWS_ACCESS_KEY: UNSET
