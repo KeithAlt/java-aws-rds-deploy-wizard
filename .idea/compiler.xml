@@ -7,7 +7,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="aws-rds-toolkit" />
-        <module name="aws-rds-toolkit-private" />
+        <module name="java-aws-rds-deploy-wizard" />
       </profile>
     </annotationProcessing>
   </component>

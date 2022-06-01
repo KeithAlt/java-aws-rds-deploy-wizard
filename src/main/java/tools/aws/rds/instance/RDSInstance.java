@@ -4,10 +4,13 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.services.rds.AmazonRDS;
+import com.amazonaws.services.rds.AmazonRDSClientBuilder;
 import com.amazonaws.services.rds.model.AmazonRDSException;
 import com.amazonaws.services.rds.model.CreateDBInstanceRequest;
 import com.amazonaws.services.rds.model.DBInstance;
-import tools.aws.rds.client.RDSClient;
 import tools.aws.rds.utils.PropertiesHandler;
 
 public class RDSInstance {
@@ -17,7 +20,7 @@ public class RDSInstance {
     private final String engine;
     private final String password;
     private final String username;
-    private final RDSClient client;
+    private final AmazonRDS client;
     private DBInstance database;
 
     public RDSInstance(Builder builder) {
@@ -32,7 +35,7 @@ public class RDSInstance {
 
     // Refresh our connection
     private RDSInstance refresh() throws AmazonRDSException {
-        List<DBInstance> instances = this.client.getClient().describeDBInstances().getDBInstances();
+        List<DBInstance> instances = this.client.describeDBInstances().getDBInstances();
         for (DBInstance instance: instances) {
             if (instance.getDBInstanceArn().equals(database.getDBInstanceArn())) {
                 this.database = instance;
@@ -67,13 +70,11 @@ public class RDSInstance {
     }
 
     // Asynchronously wait until the instance is available
-    // TODO: Exception handling can be done better.
     public CompletableFuture<RDSInstance> asyncAwaitAvailable() throws AmazonRDSException {
         return CompletableFuture.supplyAsync(this::awaitAvailable);
     }
 
     // lock thread until instance is available
-    // TODO: Exception handling can be done better.
     public RDSInstance awaitAvailable() throws AmazonRDSException  {
         try {
             while(!this.isAvailable()) {
@@ -90,7 +91,7 @@ public class RDSInstance {
         try {
             return this.createDB();
         } catch(AmazonRDSException e) {
-            List<DBInstance> instances = this.client.getClient().describeDBInstances().getDBInstances();
+            List<DBInstance> instances = this.client.describeDBInstances().getDBInstances();
             for (DBInstance instance: instances) {
                 if (instance.getDBInstanceIdentifier().equals(this.dbInstanceIdentifier)) {
                     this.database = instance;
@@ -111,7 +112,7 @@ public class RDSInstance {
                 this.username
         );
 
-        this.database = this.client.getClient().createDBInstance(req);
+        this.database = this.client.createDBInstance(req);
         return this;
     }
 
@@ -122,29 +123,27 @@ public class RDSInstance {
         private String engine;
         private String password;
         private String username;
-        private RDSClient client;
+        private AmazonRDS client;
 
         // Use a specific AWS client
         public Builder setClient(String accessKey, String secretKey, String region) throws AmazonRDSException {
-            this.client = new RDSClient.Builder()
-                    .setAccessKey(accessKey)
-                    .setSecretKey(secretKey)
-                    .setRegion(region)
+            BasicAWSCredentials awsCreds = new BasicAWSCredentials(accessKey, secretKey);
+            this.client = AmazonRDSClientBuilder.standard()
+                    .withRegion(region)
+                    .withCredentials(new AWSStaticCredentialsProvider(awsCreds))
                     .build();
             return this;
         }
 
         // Use the default AWS client on the machine
         public Builder useDefaultClient() throws AmazonRDSException {
-            this.client = new RDSClient.Builder()
-                    .useDefault().build();
+            this.client = AmazonRDSClientBuilder.defaultClient();
             return this;
         }
 
         // Use the default an AWS client with the values within the config/system properties
         public Builder useConfigClient() throws AmazonRDSException {
-            this.client = new RDSClient.Builder()
-                    .useConfigDefault().build();
+            this.client = AmazonRDSClientBuilder.defaultClient();
             return this;
         }
 

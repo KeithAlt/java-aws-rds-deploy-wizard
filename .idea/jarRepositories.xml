@@ -7,6 +7,11 @@
       <option name="url" value="https://repo.maven.apache.org/maven2" />
     </remote-repository>
     <remote-repository>
+      <option name="id" value="java.aws.rds.deploy.wizard" />
+      <option name="name" value="java.aws.rds.deploy.wizard" />
+      <option name="url" value="https://github.com/KeithAlt/java-aws-rds-deploy-wizard" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="central" />
       <option name="name" value="Maven Central repository" />
       <option name="url" value="https://repo1.maven.org/maven2" />
